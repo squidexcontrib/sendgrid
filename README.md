@@ -1,52 +1,32 @@
 ![Squidex Logo](https://raw.githubusercontent.com/Squidex/squidex/master/media/logo-wide.png "Squidex")
 
-# What is Squidex??
+# SendGrid Plugin for Squidex CMS
 
-Squidex is an open source headless CMS and content management hub. In contrast to a traditional CMS Squidex provides a rich API with OData filter and Swagger definitions. It is up to you to build your UI on top of it. It can be website, a native app or just another server. We build it with ASP.NET Core and CQRS and is tested for Windows and Linux on modern browsers.
+This plugin adds a rule action to Squidex to send out emails with SendGrid.
 
-[![Discourse topics](https://img.shields.io/discourse/https/support.squidex.io/topics.svg)](https://support.squidex.io) 
-[![Build Status](https://build.squidex.io/api/badges/Squidex/squidex/status.svg)](https://build.squidex.io/Squidex/squidex)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSquidex%2Fsquidex.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FSquidex%2Fsquidex?ref=badge_shield)
+## How to install the Plugin?
 
-Read the docs at [https://docs.squidex.io/](https://docs.squidex.io/) (work in progress) or just check out the code and play around.
+1. Download the plugin from the release page https://github.com/squidexcontrib/sendgrid/releases/download/plugin1.0/sendgrid.zip
+2. Extract the plugin to a folder, e.g. to `C:/Squidex/plugins/sendgrid`
+3. Add the path to the plugin `C:/Squidex/plugins/sendgrid/publish/Squidex.Extensions.SendGrid.dll` to the configuration. Either...
+    * Add it to the configuration file https://github.com/Squidex/squidex/blob/master/src/Squidex/appsettings.json#L24 OR
+    * Add an environment variable `PLUGINS__1`
 
-## How to make feature requests, get help or report bugs? 
+## How to install the Plugin with Docker?
 
-Please join our community forum: https://support.squidex.io
+Create a custom dockerfile where you download the plugin and add the environment.
 
-## Status
+```
+FROM squidex/squidex:dev-2273
 
-Current Version v2.0.4. Roadmap: https://trello.com/b/KakM4F3S/squidex-roadmap
+RUN apk update \
+ && apk add --no-cache busybox \
+ && apk add --no-cache wget
 
-## Prerequisites
+RUN mkdir -p plugins/sendgrid \
+ && wget -qO- https://github.com/squidexcontrib/sendgrid/releases/download/plugin1.0/sendgrid.zip | busybox unzip -q -d plugins/sendgrid -
 
-* [Visual Studio Code](https://code.visualstudio.com/) or [Visual Studio 2017](https://www.visualstudio.com/vs/visual-studio-2017-rc/)
-* [Node.js](https://nodejs.org/en/) (development only)
-* [MongoDB](https://www.mongodb.com/)
-* [.NET Core SDK](https://www.microsoft.com/net/download/core#/current) (Already part of Visual Studio 2017)
+RUN ls /app/plugins/sendgrid
 
-## Contributors
-
-### Core Team and Founders
-
-* [Qaisar Ahmad](http://www.qaisarahmad.com/) Interaction Designer, Pakistan
-* [Sebastian Stehle](https://github.com/SebastianStehle) Software Engineer, Germany (currently Sweden)
-
-### Contributors
-
-* [pushrbx](https://pushrbx.net/): Azure Store support.
-* [cpmstars](https://www.cpmstars.com): Asset support for rich editor.
-* [civicplus](https://www.civicplus.com/) ([Avd6977](https://github.com/Avd6977), [dsbegnoce](https://github.com/dsbegnoche)): Google Maps support, custom regex patterns and a lot of small improvements.
-* [razims](https://github.com/razims): GridFS support.
-
-## Contributing
-
-Please create issues to report bugs, suggest new functionalities, ask questions or just share your thoughts about the project. We will really appreciate your contribution, thanks.
-
-## Cloud Version
-
-Although Squidex is free it is also available as a Saas version on [https://cloud.squidex.io](https://cloud.squidex.io).
-
-## License
-
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSquidex%2Fsquidex.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FSquidex%2Fsquidex?ref=badge_large)
+ENV PLUGINS__1 /app/plugins/sendgrid/publish/Squidex.Extensions.SendGrid.dll
+```
